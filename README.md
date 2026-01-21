@@ -8,26 +8,9 @@ A multi-agent system for teaching concepts from any PDF document using Qdrant ve
 
 ### System Design
 
-```
-User Query
-    ↓
-┌─────────────────────┐
-│ Orchestrator Agent  │ ← Master coordinator
-└─────────────────────┘
-         ↓
-    [Routes to]
-         ↓
-    ┌────┴────┬────────┬────────┐
-    ↓         ↓        ↓        ↓
-┌─────┐  ┌──────┐  ┌──────┐  ┌──────┐
-│Tutor│  │Search│  │ Quiz │  │Future│
-│Agent│  │Agent │  │Agent │  │Agents│
-└─────┘  └──────┘  └──────┘  └──────┘
-    ↓         ↓        ↓
-  [Qdrant Vector Database]
-    ↓         ↓        ↓
-  [Groq LLM Generation]
-```
+![System Architecture](Orchestrator%20Agent%20===%20Master%20coordinator.jpg)
+
+The system follows a hierarchical multi-agent architecture where the Orchestrator Agent receives user queries and routes them to specialized agents. PDF documents are preprocessed and stored in Qdrant Vector Database, which all agents query for relevant context. Groq LLM generates natural language responses based on retrieved information.
 
 ### Agent Responsibilities
 

@@ -44,19 +44,9 @@ The system implements a true multi-agent architecture with clear separation of c
 
 ### System Workflow
 
-```
-User Query
-    ↓
-Orchestrator Agent (Intent Classification)
-    ↓
-Route to Specialist Agent
-    ↓
-Qdrant Vector Search (Semantic Retrieval)
-    ↓
-Groq LLM (Context-Aware Generation)
-    ↓
-User Response
-```
+![System Architecture](Orchestrator%20Agent%20===%20Master%20coordinator.jpg)
+
+The workflow begins with PDF upload and preprocessing. User queries are received by the Orchestrator Agent, which performs intent classification and routes to the appropriate specialist agent (Tutor, Search, Quiz, or future agents). Each agent queries the Qdrant Vector Database for semantic retrieval of relevant content. The retrieved context is passed to Groq LLM for context-aware natural language generation, and the response is returned to the user.
 
 ---
 
