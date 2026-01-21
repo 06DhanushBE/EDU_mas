@@ -1,0 +1,8 @@
+livekit
+livekit-agents
+livekit-plugins-deepgram
+livekit-plugins-openai
+livekit-plugins-silero
+groq
+qdrant-client
+python-dotenv

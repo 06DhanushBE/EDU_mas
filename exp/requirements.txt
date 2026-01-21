@@ -1,0 +1,6 @@
+# Core Pipecat framework
+pipecat-ai[daily,groq,cartesia,silero]
+
+# Additional dependencies
+python-dotenv
+aiohttp
