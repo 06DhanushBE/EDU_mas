@@ -1,8 +1,8 @@
-# Rich Dad Poor Dad - Multi-Agent AI Tutoring System
+# Multi-Agent AI Tutoring System
 
 ## Hackathon Submission - MAS Track at Convolve 4.0
 
-A multi-agent system for teaching concepts from "Rich Dad Poor Dad" using Qdrant vector database and Groq LLM.
+A multi-agent system for teaching concepts from any PDF document using Qdrant vector database and Groq LLM. The system processes PDF files, extracts content, and provides interactive tutoring through specialized agents.
 
 ## Multi-Agent Architecture
 
@@ -76,21 +76,33 @@ pip install streamlit groq qdrant-client python-dotenv
 ### Run Demo
 
 ```bash
-streamlit run app.py
+# Run the main voice agent
+python pipecat_voice_agent.py
+
+# Or explore experimental features
+python exp/bot_interactive.py
 ```
+
+### PDF Processing
+
+The system includes a PDF processor in the Jupyter notebook that:
+- Extracts text from PDF documents
+- Chunks content into semantic passages
+- Generates embeddings for vector search
+- Stores in Qdrant collections for retrieval
 
 ## System Workflow
 
 ### Example 1: Teaching Flow
 
 ```
-User: "Start teaching me Rich Dad Poor Dad"
+User: "Start teaching me from the document"
     ↓
 Orchestrator: Analyzes → Intent = "teach"
     ↓
 Tutor Agent: Activated
     ↓
-Qdrant: Retrieves "Introduction" vectors
+Qdrant: Retrieves sequential content vectors
     ↓
 Groq: Generates explanation from context
     ↓
@@ -100,13 +112,13 @@ User: Receives lesson + progress tracker
 ### Example 2: Search Flow
 
 ```
-User: "What are assets vs liabilities?"
+User: "Explain the main concepts in section X"
     ↓
 Orchestrator: Analyzes → Intent = "search"
     ↓
 Search Agent: Activated
     ↓
-Qdrant: Vector similarity search
+Qdrant: Vector similarity search across PDF content
     ↓
 Groq: Synthesizes answer from top-k results
     ↓
@@ -141,7 +153,7 @@ User: Receives quiz with explanations
 
 ```
 last MAS/
-├── app.py                          # Main Streamlit application
+├── pipecat_voice_agent.py         # Main voice-enabled application
 ├── agents/                         # Agent modules
 │   ├── __init__.py
 │   ├── orchestrator.py            # Master routing agent
@@ -151,9 +163,12 @@ last MAS/
 ├── utils/                          # Utility modules
 │   ├── __init__.py
 │   └── qdrant_client.py           # Qdrant operations
-├── hackathon_solution_clean.ipynb # Development notebook
-├── Rich Dad Poor Dad.pdf          # Source material
-├── .env                           # Environment variables
+├── exp/                            # Experimental features
+│   ├── bot_interactive.py         # Interactive bot variants
+│   ├── bot_webrtc.py              # WebRTC implementation
+│   └── ...                        # Other experimental features
+├── hackathon_solution_clean.ipynb # Development notebook with PDF processor
+├── requirements.txt               # Python dependencies
 └── README.md                      # This file
 ```
 
@@ -189,19 +204,20 @@ Quiz agent selects random topics and generates contextual questions.
 
 ### Vector Storage
 
-- Collection: `rich_dad_poor_dad_clean`
-- Vectors: 1,247+ book passages
-- Embedding: Semantic text representations
+- Collections: PDF content, teaching styles, student memory, agent learning
+- Vectors: Document passages extracted from uploaded PDFs
+- Embedding: Semantic text representations using sentence transformers
 
 ### Search Operations
 
 ```python
 # Semantic search example
 results = qdrant.search(
-    query="assets vs liabilities",
+    collection_name="pdf_content",
+    query="your search query",
     limit=5
 )
-# Returns: Top-5 most relevant passages
+# Returns: Top-5 most relevant passages from uploaded PDF
 ```
 
 ## Performance Metrics
@@ -216,18 +232,19 @@ results = qdrant.search(
 ### Scenario 1: New Learner
 
 ```
-1. User starts fresh → "Begin teaching me"
-2. Tutor agent activates → Retrieves Chapter 1
-3. Sequential lessons → Progress tracking
-4. Quiz at end → Knowledge assessment
+1. User uploads PDF document
+2. System processes and vectorizes content
+3. User starts → "Begin teaching me"
+4. Tutor agent activates → Retrieves sequential content
+5. Progressive lessons → Knowledge assessment
 ```
 
 ### Scenario 2: Specific Question
 
 ```
-1. User asks → "How do rich people use corporations?"
-2. Search agent activates → Qdrant retrieval
-3. Answer with citations → Source attribution
+1. User asks → "Explain concept X from the document"
+2. Search agent activates → Qdrant semantic search
+3. Answer with citations → Source attribution from PDF
 ```
 
 ### Scenario 3: Assessment
