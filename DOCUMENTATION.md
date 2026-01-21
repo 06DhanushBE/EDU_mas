@@ -3,6 +3,7 @@
 ## Convolve 4.0 - MAS Track Round 2 Submission
 
 ### Participant Information
+
 - **Name**: Dhanush B E
 - **Email**: dhanushbe106@gmail.com
 - **Institution**: R V University, Bengaluru, Karnataka
@@ -10,11 +11,13 @@
 - **Participation Type**: Individual
 
 ### Solution Title
+
 Multi-Agent AI Tutoring System for Financial Education
 
 ## Problem Statement Understanding
 
 The challenge was to build a Multi-Agent System using Qdrant as the primary vector search engine. The system needed to demonstrate:
+
 - Multiple specialized agents working together
 - Effective use of Qdrant for semantic search
 - Practical application solving a real-world problem
@@ -35,29 +38,14 @@ An educational system that teaches concepts from "Rich Dad Poor Dad" through mul
 
 ### Multi-Agent Design
 
-```
-User Input
-    ↓
-Orchestrator Agent (Intent Analysis)
-    ↓
-[Routes to appropriate specialist]
-    ↓
-┌────────────┬──────────────┬─────────────┐
-│            │              │             │
-Tutor Agent  Search Agent   Quiz Agent   [Future Agents]
-│            │              │             │
-└────────────┴──────────────┴─────────────┘
-         ↓
-    Qdrant Vector Database
-         ↓
-    Groq LLM Generation
-         ↓
-    Response to User
-```
+![System Architecture](Orchestrator%20Agent%20===%20Master%20coordinator.jpg)
+
+The system follows a hierarchical multi-agent architecture where the Orchestrator Agent receives user queries and routes them to specialized agents. PDF documents are preprocessed and stored in Qdrant Vector Database, which all agents query for relevant context. Groq LLM generates natural language responses based on retrieved information.
 
 ### Agent Specifications
 
 #### 1. Orchestrator Agent
+
 - **Purpose**: Intent classification and request routing
 - **Input**: Raw user query
 - **Output**: Routed request to appropriate specialist agent
@@ -65,16 +53,18 @@ Tutor Agent  Search Agent   Quiz Agent   [Future Agents]
 - **No Direct Qdrant Access**: Acts purely as a coordinator
 
 #### 2. Tutor Agent
+
 - **Purpose**: Structured teaching with lesson progression
 - **Qdrant Usage**: Retrieves sequential chapter content
 - **State Management**: Tracks user progress through lessons
 - **LLM Role**: Explains concepts in an educational format
-- **Features**: 
+- **Features**:
   - Sequential content delivery
   - Progress tracking
   - Concept reinforcement
 
 #### 3. Search Agent
+
 - **Purpose**: Semantic search across book content
 - **Qdrant Usage**: Vector similarity search with top-k retrieval
 - **LLM Role**: Synthesizes answers from retrieved passages
@@ -84,6 +74,7 @@ Tutor Agent  Search Agent   Quiz Agent   [Future Agents]
   - Context-aware responses
 
 #### 4. Quiz Agent
+
 - **Purpose**: Knowledge assessment
 - **Qdrant Usage**: Random topic selection from book content
 - **LLM Role**: Generates contextual MCQ questions
@@ -97,6 +88,7 @@ Tutor Agent  Search Agent   Quiz Agent   [Future Agents]
 ### Vector Database Setup
 
 **Collection Details**:
+
 - Name: `rich_dad_poor_dad_clean`
 - Vectors: 1,247+ book passages
 - Vector Dimension: 384 (sentence-transformers/all-MiniLM-L6-v2)
@@ -105,6 +97,7 @@ Tutor Agent  Search Agent   Quiz Agent   [Future Agents]
 ### Embedding Strategy
 
 Text passages from the PDF are:
+
 1. Extracted and cleaned
 2. Chunked into semantic units
 3. Embedded using sentence transformers
@@ -113,6 +106,7 @@ Text passages from the PDF are:
 ### Search Operations
 
 **Tutor Agent Query Example**:
+
 ```python
 results = qdrant_client.search(
     collection_name="rich_dad_poor_dad_clean",
@@ -123,6 +117,7 @@ results = qdrant_client.search(
 ```
 
 **Search Agent Query Example**:
+
 ```python
 results = qdrant_client.search(
     collection_name="rich_dad_poor_dad_clean",
@@ -142,6 +137,7 @@ results = qdrant_client.search(
 ## Technical Stack
 
 ### Core Technologies
+
 - **Vector Database**: Qdrant Cloud
 - **LLM**: Groq (llama-3.1-70b-versatile)
 - **Embeddings**: sentence-transformers/all-MiniLM-L6-v2
@@ -150,6 +146,7 @@ results = qdrant_client.search(
 - **Interface**: Streamlit (for demo purposes)
 
 ### Key Libraries
+
 ```
 qdrant-client
 groq
@@ -162,6 +159,7 @@ streamlit
 ## Implementation Details
 
 ### File Structure
+
 ```
 EDU_mas/
 ├── agents/
@@ -196,31 +194,40 @@ EDU_mas/
 ## Key Features
 
 ### 1. Intelligent Routing
+
 The orchestrator uses pattern matching to identify:
+
 - Teaching requests → Tutor Agent
 - Questions → Search Agent
 - Assessment requests → Quiz Agent
 
 ### 2. Context-Aware Responses
+
 All agents use Qdrant-retrieved context for LLM generation, ensuring:
+
 - Factually accurate responses
 - Source attribution
 - Relevant content only
 
 ### 3. Progressive Learning
+
 Tutor agent maintains lesson continuity:
+
 - Starts from introduction
 - Advances through chapters sequentially
 - Reinforces previous concepts
 
 ### 4. Semantic Understanding
+
 Search agent finds conceptually similar content:
+
 - "How to become wealthy" matches passages about wealth building strategies
 - "Passive income" retrieves relevant examples and explanations
 
 ## Demonstration Scenarios
 
 ### Scenario 1: New Student
+
 ```
 User: "Teach me about Rich Dad Poor Dad"
 System: [Orchestrator] → Routes to Tutor Agent
@@ -229,6 +236,7 @@ Response: Explains core concepts, sets up learning path
 ```
 
 ### Scenario 2: Specific Question
+
 ```
 User: "What's the difference between assets and liabilities?"
 System: [Orchestrator] → Routes to Search Agent
@@ -237,6 +245,7 @@ Response: Synthesized answer with book citations
 ```
 
 ### Scenario 3: Knowledge Check
+
 ```
 User: "Test my understanding"
 System: [Orchestrator] → Routes to Quiz Agent
@@ -247,23 +256,27 @@ Response: MCQ questions with explanations
 ## Innovation Highlights
 
 ### 1. True Multi-Agent Architecture
+
 - Clear separation of concerns
 - Each agent has specialized function
 - Coordinated through orchestrator
 - No single-point bottleneck
 
 ### 2. Educational Value
+
 - Structured learning path
 - Interactive questioning
 - Knowledge assessment
 - Progress tracking
 
 ### 3. Scalability
+
 - Modular design allows easy addition of new agents
 - Can extend to multiple books/subjects
 - Voice interface ready (experimental implementation included)
 
 ### 4. Practical Application
+
 - Solves real problem: access to financial education
 - Can be deployed as educational tool
 - Demonstrates production-ready patterns
@@ -271,17 +284,20 @@ Response: MCQ questions with explanations
 ## Performance Characteristics
 
 ### Response Times
+
 - Intent routing: < 100ms
 - Qdrant search: < 500ms
 - LLM generation: 1-2 seconds
 - Total end-to-end: < 3 seconds
 
 ### Accuracy
+
 - Semantic search: High relevance (cosine similarity > 0.7)
 - Intent classification: >95% accuracy on test queries
 - Educational quality: Contextually grounded in source material
 
 ### Scalability
+
 - Handles concurrent users through stateless design
 - Qdrant collection can grow to millions of vectors
 - Agent architecture supports horizontal scaling
@@ -289,6 +305,7 @@ Response: MCQ questions with explanations
 ## Future Enhancements
 
 ### Planned Features
+
 1. **Memory Agent**: Long-term student history
 2. **Visualization Agent**: Concept diagrams and mind maps
 3. **Voice Interface**: Full speech-to-text and text-to-speech
@@ -296,6 +313,7 @@ Response: MCQ questions with explanations
 5. **Personalization**: Adaptive teaching based on learning style
 
 ### Technical Improvements
+
 1. Fine-tuned embeddings for financial content
 2. Advanced intent classification using ML
 3. Multi-modal support (images, videos)
@@ -304,11 +322,13 @@ Response: MCQ questions with explanations
 ## Setup Instructions
 
 ### Prerequisites
+
 - Python 3.8+
 - Qdrant Cloud account
 - Groq API key
 
 ### Installation
+
 ```bash
 git clone https://github.com/06DhanushBE/EDU_mas.git
 cd EDU_mas
@@ -316,7 +336,9 @@ pip install -r requirements.txt
 ```
 
 ### Configuration
+
 Create `.env` file:
+
 ```
 GROQ_API_KEY=your_groq_api_key
 QDRANT_URL=your_qdrant_cluster_url
@@ -324,6 +346,7 @@ QDRANT_API_KEY=your_qdrant_api_key
 ```
 
 ### Running
+
 ```bash
 streamlit run app.py
 ```
@@ -331,18 +354,22 @@ streamlit run app.py
 ## Challenges Faced
 
 ### 1. Intent Classification
+
 **Challenge**: Distinguishing between teaching vs. question-answering intents
 **Solution**: Pattern-based classification with keyword analysis
 
 ### 2. Context Relevance
+
 **Challenge**: Ensuring Qdrant retrieves relevant passages
 **Solution**: Optimized chunk size and similarity thresholds
 
 ### 3. Response Quality
+
 **Challenge**: LLM hallucination without proper grounding
 **Solution**: Always provide Qdrant context to LLM prompts
 
 ### 4. State Management
+
 **Challenge**: Tracking lesson progress across sessions
 **Solution**: In-memory state with session-based tracking
 
